@@ -23,7 +23,7 @@ public class LutadorController {
 
     @GetMapping
     public ResponseEntity getLutador() {
-        List<Lutador> lutadores = repository.findAllByOrderByForcaGolpeAsc();
+        List<Lutador> lutadores = repository.findAllByOrderByForcaGolpeDesc();
 
         if (lutadores.isEmpty()) {
             return ResponseEntity.status(204).build();
@@ -34,12 +34,19 @@ public class LutadorController {
 
     @GetMapping("/contagem-vivos")
     public ResponseEntity getContagemVivos() {
-        List<Lutador> lutadores = repository.findAllByOrderByForcaGolpeAsc();
+        long vivos = repository.countAllByVivoTrue();
 
-        if (lutadores.isEmpty()) {
+        return ResponseEntity.status(200).body(vivos);
+    }
+
+    @GetMapping("/mortos")
+    public ResponseEntity getMortos() {
+        List<Lutador> mortos = repository.findAllByVivoFalse();
+
+        if (mortos.isEmpty()) {
             return ResponseEntity.status(204).build();
         } else {
-            return ResponseEntity.status(200).body(lutadores);
+            return ResponseEntity.status(200).body(mortos);
         }
     }
 }
